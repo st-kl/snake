@@ -48,3 +48,7 @@ code {
 .food {
   background-color: red;
 }
+
+.gameOverWrapper {
+  text-align: center;
+}
