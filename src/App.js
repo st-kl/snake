@@ -4,11 +4,12 @@ import './App.css';
 function App() {
   const rows = 15;
   const columns = 21;
+  let tail;
 
   const [grid, setGrid] = useState([]);
-  const [direction, setDirection] = useState('left');
-  const [snake, setSnake] = useState([{ row: 3, col: 7 }]);
-  const [food, setFood] = useState({ row: 3, col: 2 });
+  const [direction, setDirection] = useState('down');
+  const [snake, setSnake] = useState([{ row: 4, col: 11 }]);
+  const [food, setFood] = useState({ row: 5, col: 11 });
 
   const updateGrid = () => {
     setGrid(() => {
@@ -23,10 +24,10 @@ function App() {
             }
           }
 
-          if (food.row === i && food.col === j) {
-            grid.push({ row: i, col: j, class: 'grid-item food' });
-          } else if (isSnake) {
+          if (isSnake) {
             grid.push({ row: i, col: j, class: 'grid-item snake' });
+          } else if (food.row === i && food.col === j) {
+            grid.push({ row: i, col: j, class: 'grid-item food' });
             isSnake = false;
           } else {
             grid.push({ row: i, col: j, class: 'grid-item' });
@@ -47,7 +48,7 @@ function App() {
           });
 
           newSnake.unshift({ row: newSnake[0].row - 1, col: newSnake[0].col });
-          newSnake.pop();
+          tail = newSnake.pop();
           return newSnake;
         });
         break;
@@ -58,7 +59,7 @@ function App() {
           });
 
           newSnake.unshift({ row: newSnake[0].row + 1, col: newSnake[0].col });
-          newSnake.pop();
+          tail = newSnake.pop();
           return newSnake;
         });
         break;
@@ -69,7 +70,7 @@ function App() {
           });
 
           newSnake.unshift({ row: newSnake[0].row, col: newSnake[0].col - 1 });
-          newSnake.pop();
+          tail = newSnake.pop();
           return newSnake;
         });
         break;
@@ -80,33 +81,84 @@ function App() {
           });
 
           newSnake.unshift({ row: newSnake[0].row, col: newSnake[0].col + 1 });
-          newSnake.pop();
+          tail = newSnake.pop();
           return newSnake;
         });
         break;
     }
   };
 
+  const evaluateSnake = () => {
+    if (snake[0].row === food.row && snake[0].col === food.col) {
+      setSnake((currSnake) => {
+        const newSnake = currSnake.map((part) => {
+          return { ...part };
+        });
+
+        newSnake.push(tail);
+        return newSnake;
+      });
+      setFood(() => {
+        let isFree = false;
+
+        while (!isFree) {
+          const row = Math.floor(Math.random() * rows);
+          const col = Math.floor(Math.random() * columns);
+
+          if (
+            !snake.filter((part) => part.row === row && part.col === col).length
+          ) {
+            isFree = true;
+            return { row: row, col: col };
+          }
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     updateGrid();
-  }, [snake]);
+  }, [snake, food]);
 
-  /*   document.addEventListener('keydown', (key) => {
-    switch (key.keyCode) {
-      case 37:
-        setDirection('left');
-        break;
-      case 38:
-        setDirection('up');
-        break;
-      case 39:
-        setDirection('right');
-        break;
-      case 40:
-        setDirection('down');
-        break;
-    }
-  }); */
+  useEffect(() => {
+    const [body] = document.getElementsByTagName('body');
+    body.onkeydown = ({ key }) => {
+      switch (key) {
+        case 'ArrowUp':
+          setDirection(() => {
+            if (direction !== 'up') {
+              return 'down';
+            } else {
+              return 'up';
+            }
+          });
+        case 'ArrowDown':
+          setDirection(() => {
+            if (direction !== 'down') {
+              return 'up';
+            } else {
+              return 'down';
+            }
+          });
+        case 'ArrowLeft':
+          setDirection(() => {
+            if (direction !== 'right') {
+              return 'left';
+            } else {
+              return 'right';
+            }
+          });
+        case 'ArrowRight':
+          setDirection(() => {
+            if (direction !== 'left') {
+              return 'right';
+            } else {
+              return 'left';
+            }
+          });
+      }
+    };
+  }, []);
 
   return (
     <div className='App'>
@@ -126,41 +178,11 @@ function App() {
           <button
             onClick={() => {
               moveSnake();
-              if (snake[0].row === food.row && snake[0].col === food.col) {
-                setSnake((currSnake) => {
-                  const newSnake = currSnake.map((part) => {
-                    return { ...part };
-                  });
-
-                  newSnake.push({ row: food.row, col: food.col });
-                  return newSnake;
-                });
-                /*                 setFood((currFood) => {
-                  let isFree = false;
-
-                  while (isFree) {
-                    const row = Math.floor(Math.random * rows);
-                    const col = Math.floor(Math.random * columns);
-
-                    if (
-                      !snake.filter(
-                        (part) => part.row === row && part.col === col
-                      ).length
-                    ) {
-                      isFree = false;
-                      return { row: row, col: col };
-                    }
-                  }
-                }); */
-              }
+              evaluateSnake();
             }}
           >
             Start Game
           </button>
-          <button onClick={() => setDirection('up')}>UP</button>
-          <button onClick={() => setDirection('down')}>DOWN</button>
-          <button onClick={() => setDirection('left')}>LEFT</button>
-          <button onClick={() => setDirection('right')}>RIGHT</button>
         </div>
       </div>
     </div>
