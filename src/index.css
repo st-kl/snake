@@ -39,6 +39,15 @@ code {
 }
 
 .info {
+  border: solid 1px black;
+  height: 422px;
+  width: 590px;
+  margin: auto;
+  background-color: rgb(170, 170, 170);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .snake {
@@ -51,6 +60,13 @@ code {
   border-radius: 10px;
 }
 
-.gameOverWrapper {
-  text-align: center;
+button {
+  padding: 10px;
+  margin: 10px;
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 10px;
+  font-size: 1.5rem;
 }

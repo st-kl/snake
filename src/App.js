@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
   const [grid, setGrid] = useState([]);
   const [direction, setDirection] = useState('down');
   const [snake, setSnake] = useState([{ row: 4, col: 11 }]);
-  const [food, setFood] = useState({ row: rows + 1, col: columns + 1 });
+  const [food, setFood] = useState(createRandomCoordinates());
   const [gameOver, setGameOver] = useState(true);
   const [points, setPoints] = useState(0);
   const [buttonText, setButtonText] = useState('Play');
@@ -151,38 +151,47 @@ function App() {
   return (
     <div className='App'>
       <div className='content'>
-        <div className='grid'>
-          {grid.map((cell) => {
-            return (
-              <div
-                className={`${cell.class}`}
-                key={`grid-item-${cell.row}-${cell.col}`}
-              ></div>
-            );
-          })}
-        </div>
-        <div className='info'>
-          <p>Points: {points}</p>
-          <button
-            onClick={() => {
-              setGameOver(false);
-              setSnake([{ row: 4, col: 11 }]);
-              setFood(createRandomCoordinates());
-              setPoints(0);
-              setDirection('down');
-            }}
-          >
-            {buttonText}
-          </button>
-          <p
-            style={{
-              visibility:
-                gameOver && buttonText === 'Play again' ? 'visible' : 'hidden',
-            }}
-          >
-            GAME OVER
-          </p>
-        </div>
+        <h1>Snake</h1>
+        {!gameOver ? (
+          <div>
+            <div className='grid'>
+              {grid.map((cell) => {
+                return (
+                  <div
+                    className={`${cell.class}`}
+                    key={`grid-item-${cell.row}-${cell.col}`}
+                  ></div>
+                );
+              })}
+            </div>
+            <p>Points: {points}</p>
+          </div>
+        ) : (
+          <div className='info'>
+            <p>Points: {points}</p>
+            <button
+              onClick={() => {
+                setGameOver(false);
+                setSnake([{ row: 4, col: 11 }]);
+                setFood(createRandomCoordinates());
+                setPoints(0);
+                setDirection('down');
+              }}
+            >
+              {buttonText}
+            </button>
+            <p
+              style={{
+                visibility:
+                  gameOver && buttonText === 'Play again'
+                    ? 'visible'
+                    : 'hidden',
+              }}
+            >
+              GAME OVER
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
