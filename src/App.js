@@ -24,9 +24,10 @@ function App() {
   const [grid, setGrid] = useState([]);
   const [direction, setDirection] = useState('down');
   const [snake, setSnake] = useState([{ row: 4, col: 11 }]);
-  const [food, setFood] = useState(createRandomCoordinates());
-  const [gameOver, setGameOver] = useState(false);
+  const [food, setFood] = useState({ row: rows + 1, col: columns + 1 });
+  const [gameOver, setGameOver] = useState(true);
   const [points, setPoints] = useState(0);
+  const [buttonText, setButtonText] = useState('Play');
 
   const updateGrid = () => {
     setGrid(() => {
@@ -57,24 +58,26 @@ function App() {
   };
 
   const moveSnake = () => {
-    let head = snake.slice(0)[0];
-    switch (direction) {
-      case 'up':
-        head = { row: head.row - 1, col: head.col };
-        break;
-      case 'down':
-        head = { row: head.row + 1, col: head.col };
-        break;
-      case 'left':
-        head = { row: head.row, col: head.col - 1 };
-        break;
-      case 'right':
-        head = { row: head.row, col: head.col + 1 };
-        break;
-      default:
-        break;
+    if (!gameOver) {
+      let head = snake.slice(0)[0];
+      switch (direction) {
+        case 'up':
+          head = { row: head.row - 1, col: head.col };
+          break;
+        case 'down':
+          head = { row: head.row + 1, col: head.col };
+          break;
+        case 'left':
+          head = { row: head.row, col: head.col - 1 };
+          break;
+        case 'right':
+          head = { row: head.row, col: head.col + 1 };
+          break;
+        default:
+          break;
+      }
+      setSnake([head, ...snake.slice(0, -1)]);
     }
-    setSnake([head, ...snake.slice(0, -1)]);
   };
 
   useEffect(() => {
@@ -91,16 +94,19 @@ function App() {
   function onKeyDown(e) {
     switch (e.keyCode) {
       case 38:
-        setDirection('up');
+        if (direction !== 'down') setDirection('up');
         break;
       case 40:
-        setDirection('down');
+        if (direction !== 'up') setDirection('down');
+
         break;
       case 37:
-        setDirection('left');
+        if (direction !== 'right') setDirection('left');
+
         break;
       case 39:
-        setDirection('right');
+        if (direction !== 'left') setDirection('right');
+
         break;
     }
   }
@@ -123,13 +129,12 @@ function App() {
 
   const checkCollision = () => {
     let isSnake = false;
-    /* 
-       for (const part of snake) {
+
+    for (const part of snake.slice(3)) {
       if (part.row === snake[0].row && part.col === snake[0].col) {
         isSnake = true;
-   
       }
-    } */
+    }
 
     if (
       snake[0].row === 0 ||
@@ -139,15 +144,13 @@ function App() {
       isSnake
     ) {
       setGameOver(true);
+      setButtonText('Play again');
     }
   };
 
   return (
     <div className='App'>
-      <div
-        className='content'
-        style={{ visibility: gameOver ? 'hidden' : 'visible' }}
-      >
+      <div className='content'>
         <div className='grid'>
           {grid.map((cell) => {
             return (
@@ -160,26 +163,26 @@ function App() {
         </div>
         <div className='info'>
           <p>Points: {points}</p>
-          <button onClick={() => {}}>Start Game</button>
+          <button
+            onClick={() => {
+              setGameOver(false);
+              setSnake([{ row: 4, col: 11 }]);
+              setFood(createRandomCoordinates());
+              setPoints(0);
+              setDirection('down');
+            }}
+          >
+            {buttonText}
+          </button>
+          <p
+            style={{
+              visibility:
+                gameOver && buttonText === 'Play again' ? 'visible' : 'hidden',
+            }}
+          >
+            GAME OVER
+          </p>
         </div>
-      </div>
-      <div
-        className='gameOverWrapper'
-        style={{ visibility: gameOver ? 'visible' : 'hidden' }}
-      >
-        <p>GAME OVER</p>
-        <button
-          onClick={() => {
-            setGameOver(false);
-            setSnake([{ row: 4, col: 11 }]);
-            setFood({ row: 5, col: 11 });
-            setPoints(0);
-            updateGrid();
-            setDirection('down');
-          }}
-        >
-          Restart
-        </button>
       </div>
     </div>
   );
