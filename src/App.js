@@ -1,18 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 
 function App() {
   const rows = 15;
   const columns = 21;
-  let tail;
+
+  const createRandomCoordinates = () => {
+    let isFree = false;
+
+    while (!isFree) {
+      const row = Math.floor(Math.random() * rows) + 1;
+      const col = Math.floor(Math.random() * columns) + 1;
+
+      if (
+        !snake.filter((part) => part.row === row && part.col === col).length
+      ) {
+        isFree = true;
+        return { row: row, col: col };
+      }
+    }
+  };
 
   const [grid, setGrid] = useState([]);
   const [direction, setDirection] = useState('down');
   const [snake, setSnake] = useState([{ row: 4, col: 11 }]);
-  const [food, setFood] = useState({ row: 5, col: 11 });
+  const [food, setFood] = useState(createRandomCoordinates());
   const [gameOver, setGameOver] = useState(false);
   const [points, setPoints] = useState(0);
-  console.log(direction);
 
   const updateGrid = () => {
     setGrid(() => {
@@ -43,134 +57,90 @@ function App() {
   };
 
   const moveSnake = () => {
+    let head = snake.slice(0)[0];
     switch (direction) {
       case 'up':
-        setSnake((currSnake) => {
-          const newSnake = currSnake.map((part) => {
-            return { ...part };
-          });
-
-          newSnake.unshift({ row: newSnake[0].row - 1, col: newSnake[0].col });
-          tail = newSnake.pop();
-          return newSnake;
-        });
+        head = { row: head.row - 1, col: head.col };
         break;
       case 'down':
-        setSnake((currSnake) => {
-          const newSnake = currSnake.map((part) => {
-            return { ...part };
-          });
-
-          newSnake.unshift({ row: newSnake[0].row + 1, col: newSnake[0].col });
-          tail = newSnake.pop();
-          return newSnake;
-        });
+        head = { row: head.row + 1, col: head.col };
         break;
       case 'left':
-        setSnake((currSnake) => {
-          const newSnake = currSnake.map((part) => {
-            return { ...part };
-          });
-
-          newSnake.unshift({ row: newSnake[0].row, col: newSnake[0].col - 1 });
-          tail = newSnake.pop();
-          return newSnake;
-        });
+        head = { row: head.row, col: head.col - 1 };
         break;
       case 'right':
-        setSnake((currSnake) => {
-          const newSnake = currSnake.map((part) => {
-            return { ...part };
-          });
-
-          newSnake.unshift({ row: newSnake[0].row, col: newSnake[0].col + 1 });
-          tail = newSnake.pop();
-          return newSnake;
-        });
+        head = { row: head.row, col: head.col + 1 };
+        break;
+      default:
         break;
     }
+    setSnake([head, ...snake.slice(0, -1)]);
   };
 
-  const evaluateSnake = () => {
-    if (
-      snake[0].col === columns ||
-      snake[0].col === 0 ||
-      snake[0].row === rows ||
-      snake[0].row === 0
-    ) {
-      setGameOver(true);
+  useEffect(() => {
+    document.onkeydown = onKeyDown;
+    checkCollision();
+    eatFood();
+
+    const runGame = setInterval(() => {
+      moveSnake();
+    }, 300);
+    return () => clearInterval(runGame);
+  });
+
+  function onKeyDown(e) {
+    switch (e.keyCode) {
+      case 38:
+        setDirection('up');
+        break;
+      case 40:
+        setDirection('down');
+        break;
+      case 37:
+        setDirection('left');
+        break;
+      case 39:
+        setDirection('right');
+        break;
     }
+  }
+
+  const growSnake = () => {
+    setSnake([...snake, snake.slice(-1)[0]]);
+  };
+
+  const eatFood = () => {
     if (snake[0].row === food.row && snake[0].col === food.col) {
-      setSnake((currSnake) => {
-        const newSnake = currSnake.map((part) => {
-          return { ...part };
-        });
-
-        newSnake.push(tail);
-        return newSnake;
-      });
-      setFood(() => {
-        let isFree = false;
-
-        while (!isFree) {
-          const row = Math.floor(Math.random() * rows);
-          const col = Math.floor(Math.random() * columns);
-
-          if (
-            !snake.filter((part) => part.row === row && part.col === col).length
-          ) {
-            isFree = true;
-            return { row: row, col: col };
-          }
-        }
-      });
+      setFood(createRandomCoordinates());
+      growSnake();
       setPoints(points + 1);
     }
   };
 
   useEffect(() => {
     updateGrid();
-  }, [snake]);
+  }, [snake, food]);
 
-  useEffect(() => {
-    const [body] = document.getElementsByTagName('body');
-    body.onkeydown = ({ key }) => {
-      switch (key) {
-        case 'ArrowUp':
-          setDirection(() => {
-            if (direction !== 'up') {
-              return 'down';
-            } else {
-              return 'up';
-            }
-          });
-        case 'ArrowDown':
-          setDirection(() => {
-            if (direction !== 'down') {
-              return 'up';
-            } else {
-              return 'down';
-            }
-          });
-        case 'ArrowLeft':
-          setDirection(() => {
-            if (direction !== 'right') {
-              return 'left';
-            } else {
-              return 'right';
-            }
-          });
-        case 'ArrowRight':
-          setDirection(() => {
-            if (direction !== 'left') {
-              return 'right';
-            } else {
-              return 'left';
-            }
-          });
+  const checkCollision = () => {
+    let isSnake = false;
+    /* 
+       for (const part of snake) {
+      if (part.row === snake[0].row && part.col === snake[0].col) {
+        isSnake = true;
+   
       }
-    };
-  }, []);
+    } */
+
+    if (
+      snake[0].row === 0 ||
+      snake[0].row === rows + 1 ||
+      snake[0].col === 0 ||
+      snake[0].col === columns + 1 ||
+      isSnake
+    ) {
+      setGameOver(true);
+    }
+  };
 
   return (
     <div className='App'>
@@ -190,14 +160,7 @@ function App() {
         </div>
         <div className='info'>
           <p>Points: {points}</p>
-          <button
-            onClick={() => {
-              moveSnake();
-              evaluateSnake();
-            }}
-          >
-            Start Game
-          </button>
+          <button onClick={() => {}}>Start Game</button>
         </div>
       </div>
       <div
