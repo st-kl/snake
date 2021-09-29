@@ -29,31 +29,29 @@ function App() {
   const [buttonText, setButtonText] = useState('Play');
 
   const createGrid = () => {
-    setGrid(() => {
-      const grid = [];
-      for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < columns; j++) {
-          let isSnake = false;
+    const grid = [];
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        let isSnake = false;
 
-          for (const part of snake) {
-            if (part.x === i && part.y === j) {
-              isSnake = true;
-            }
-          }
-
-          if (isSnake) {
-            grid.push({ x: i, y: j, class: 'grid-item snake' });
-          } else if (food.x === i && food.y === j) {
-            grid.push({ x: i, y: j, class: 'grid-item food' });
-            isSnake = false;
-          } else {
-            grid.push({ x: i, y: j, class: 'grid-item' });
+        for (const part of snake) {
+          if (part.x === i && part.y === j) {
+            isSnake = true;
           }
         }
-      }
 
-      return grid;
-    });
+        if (isSnake) {
+          grid.push({ x: i, y: j, class: 'grid-item snake' });
+        } else if (food.x === i && food.y === j) {
+          grid.push({ x: i, y: j, class: 'grid-item food' });
+          isSnake = false;
+        } else {
+          grid.push({ x: i, y: j, class: 'grid-item' });
+        }
+      }
+    }
+
+    return grid;
   };
 
   const moveSnake = () => {
@@ -126,6 +124,8 @@ function App() {
       case 39:
         if (direction !== 'left') setDirection('right');
         break;
+      default:
+        break;
     }
   }
 
@@ -142,7 +142,8 @@ function App() {
   });
 
   useEffect(() => {
-    createGrid();
+    setGrid(createGrid());
+    // eslint-disable-next-line
   }, [snake, food]);
 
   return (
