@@ -29,6 +29,80 @@ function App() {
   const [buttonText, setButtonText] = useState('Play');
 
   const createGrid = () => {
+    for (const [i, v] of snake.entries()) {
+      if (i === 0) {
+        v.class = 'grid-item snake head';
+      } else if (i === snake.length - 1) {
+        switch (direction) {
+          case 'down':
+            v.class = 'grid-item snake tail down';
+            break;
+          case 'up':
+            v.class = 'grid-item snake tail up';
+            break;
+          case 'right':
+            v.class = 'grid-item snake tail right';
+            break;
+          case 'left':
+            v.class = 'grid-item snake tail left';
+            break;
+          default:
+            break;
+        }
+      } else {
+        if (snake.length > 2) {
+          const front = snake[i - 1];
+          const back = snake[i + 1];
+          if (
+            (front.x === v.x + 1 &&
+              front.y === v.y &&
+              back.x === v.x &&
+              back.y === v.y + 1) ||
+            (front.x === v.x &&
+              front.y === v.y + 1 &&
+              back.x === v.x + 1 &&
+              back.y === v.y)
+          ) {
+            v.class = 'grid-item snake body top-left';
+          } else if (
+            (front.x === v.x &&
+              front.y === v.y + 1 &&
+              back.x === v.x - 1 &&
+              back.y === v.y) ||
+            (front.x === v.x - 1 &&
+              front.y === v.y &&
+              back.x === v.x &&
+              back.y === v.y + 1)
+          ) {
+            v.class = 'grid-item snake body bottom-left';
+          } else if (
+            (front.x === v.x - 1 &&
+              front.y === v.y &&
+              back.x === v.x &&
+              back.y === v.y - 1) ||
+            (front.x === v.x &&
+              front.y === v.y - 1 &&
+              back.x === v.x - 1 &&
+              back.y === v.y)
+          ) {
+            v.class = 'grid-item snake body bottom-right';
+          } else if (
+            (front.x === v.x &&
+              front.y === v.y - 1 &&
+              back.x === v.x + 1 &&
+              back.y === v.y) ||
+            (front.x === v.x + 1 &&
+              front.y === v.y &&
+              back.x === v.x &&
+              back.y === v.y - 1)
+          ) {
+            v.class = 'grid-item snake body top-right';
+          } else {
+            v.class = 'grid-item snake body';
+          }
+        }
+      }
+    }
     const grid = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -37,20 +111,19 @@ function App() {
         for (const part of snake) {
           if (part.x === i && part.y === j) {
             isSnake = true;
+            grid.push(part);
           }
         }
-
-        if (isSnake) {
-          grid.push({ x: i, y: j, class: 'grid-item snake' });
-        } else if (food.x === i && food.y === j) {
-          grid.push({ x: i, y: j, class: 'grid-item food' });
-          isSnake = false;
-        } else {
-          grid.push({ x: i, y: j, class: 'grid-item' });
+        if (!isSnake) {
+          if (food.x === i && food.y === j) {
+            grid.push({ x: i, y: j, class: 'grid-item food' });
+            isSnake = false;
+          } else {
+            grid.push({ x: i, y: j, class: 'grid-item' });
+          }
         }
       }
     }
-
     return grid;
   };
 
@@ -78,7 +151,7 @@ function App() {
   };
 
   const growSnake = () => {
-    setSnake([...snake, snake.slice(-1)[0]]);
+    setSnake([...snake, snake.slice(-1)]);
   };
 
   const eatFood = () => {
@@ -110,7 +183,7 @@ function App() {
     }
   };
 
-  function keyPress(event) {
+  const keyPress = (event) => {
     switch (event.keyCode) {
       case 38:
         if (direction !== 'down') setDirection('up');
@@ -124,10 +197,26 @@ function App() {
       case 39:
         if (direction !== 'left') setDirection('right');
         break;
+      case 32:
+        if (gameOver) startGame();
+        break;
       default:
         break;
     }
-  }
+  };
+
+  const startGame = () => {
+    setGameOver(false);
+    setSnake([
+      {
+        x: Math.floor(rows / 2),
+        y: Math.floor(columns / 2),
+      },
+    ]);
+    setFood(createRandomCoordinates());
+    setPoints(0);
+    setDirection('down');
+  };
 
   // effects
   useEffect(() => {
@@ -137,7 +226,7 @@ function App() {
 
     const runGame = setInterval(() => {
       moveSnake();
-    }, 200);
+    }, 100);
     return () => clearInterval(runGame);
   });
 
@@ -147,12 +236,12 @@ function App() {
   }, [snake, food]);
 
   return (
-    <div className="App">
-      <div className="content">
+    <div className='App'>
+      <div className='content'>
         <h1>Snake</h1>
         {!gameOver ? (
           <div>
-            <div className="grid">
+            <div className='grid'>
               {grid.map((cell) => {
                 return (
                   <div
@@ -165,20 +254,11 @@ function App() {
             <p>Points: {points}</p>
           </div>
         ) : (
-          <div className="info">
+          <div className='info'>
             <p>Points: {points}</p>
             <button
               onClick={() => {
-                setGameOver(false);
-                setSnake([
-                  {
-                    x: Math.floor(rows / 2),
-                    y: Math.floor(columns / 2),
-                  },
-                ]);
-                setFood(createRandomCoordinates());
-                setPoints(0);
-                setDirection('down');
+                startGame();
               }}
             >
               {buttonText}
