@@ -31,7 +31,22 @@ function App() {
   const createGrid = () => {
     for (const [i, v] of snake.entries()) {
       if (i === 0) {
-        v.class = 'grid-item snake head';
+        switch (direction) {
+          case 'up':
+            v.class = 'grid-item snake head up';
+            break;
+          case 'down':
+            v.class = 'grid-item snake head doww';
+            break;
+          case 'left':
+            v.class = 'grid-item snake head left';
+            break;
+          case 'right':
+            v.class = 'grid-item snake head right';
+            break;
+          default:
+            break;
+        }
       } else if (i === snake.length - 1) {
         const tail = snake[snake.length - 1];
         const beforeTail = snake[snake.length - 2];

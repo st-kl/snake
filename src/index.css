@@ -55,7 +55,7 @@ code {
 }
 
 .head {
-  background-image: url('img/snake-head.png');
+  background: url('./img/snake-head.svg');
 }
 
 .tail {
