@@ -28,6 +28,7 @@ function App() {
   const [points, setPoints] = useState(0);
   const [buttonText, setButtonText] = useState('Play');
   const [highScore, setHighScore] = useState(0);
+  const [difficulty, setDifficulty] = useState(500);
 
   const createGrid = () => {
     for (const [i, v] of snake.entries()) {
@@ -238,7 +239,7 @@ function App() {
 
     const runGame = setInterval(() => {
       moveSnake();
-    }, 100);
+    }, difficulty);
     return () => clearInterval(runGame);
   });
 
@@ -263,6 +264,7 @@ function App() {
                 );
               })}
             </div>
+
             <p>Points: {points}</p>
             <p>High Score: {highScore}</p>
           </div>
@@ -285,6 +287,24 @@ function App() {
             >
               {buttonText}
             </button>
+            <input
+              type="radio"
+              checked={difficulty === 500}
+              onChange={() => setDifficulty(500)}
+            />
+            Easy
+            <input
+              type="radio"
+              checked={difficulty === 150}
+              onChange={() => setDifficulty(150)}
+            />
+            Medium
+            <input
+              type="radio"
+              checked={difficulty === 50}
+              onChange={() => setDifficulty(50)}
+            />
+            Hard
             <p>Points: {points}</p>
             <p>High Score: {highScore}</p>
           </div>
