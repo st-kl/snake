@@ -27,6 +27,7 @@ function App() {
   const [gameOver, setGameOver] = useState(true);
   const [points, setPoints] = useState(0);
   const [buttonText, setButtonText] = useState('Play');
+  const [highScore, setHighScore] = useState(0);
 
   const createGrid = () => {
     for (const [i, v] of snake.entries()) {
@@ -190,6 +191,7 @@ function App() {
     ) {
       setGameOver(true);
       setButtonText('Play again');
+      if (points > highScore) setHighScore(points);
     }
   };
 
@@ -262,17 +264,10 @@ function App() {
               })}
             </div>
             <p>Points: {points}</p>
+            <p>High Score: {highScore}</p>
           </div>
         ) : (
           <div className="info">
-            <p>Points: {points}</p>
-            <button
-              onClick={() => {
-                startGame();
-              }}
-            >
-              {buttonText}
-            </button>
             <p
               style={{
                 visibility:
@@ -283,6 +278,15 @@ function App() {
             >
               GAME OVER
             </p>
+            <button
+              onClick={() => {
+                startGame();
+              }}
+            >
+              {buttonText}
+            </button>
+            <p>Points: {points}</p>
+            <p>High Score: {highScore}</p>
           </div>
         )}
       </div>
