@@ -33,21 +33,16 @@ function App() {
       if (i === 0) {
         v.class = 'grid-item snake head';
       } else if (i === snake.length - 1) {
-        switch (direction) {
-          case 'down':
-            v.class = 'grid-item snake tail down';
-            break;
-          case 'up':
-            v.class = 'grid-item snake tail up';
-            break;
-          case 'right':
-            v.class = 'grid-item snake tail right';
-            break;
-          case 'left':
-            v.class = 'grid-item snake tail left';
-            break;
-          default:
-            break;
+        const tail = snake[snake.length - 1];
+        const beforeTail = snake[snake.length - 2];
+        if (tail.x === beforeTail.x && tail.y === beforeTail.y + 1) {
+          v.class = 'grid-item snake tail left';
+        } else if (tail.x === beforeTail.x && tail.y === beforeTail.y - 1) {
+          v.class = 'grid-item snake tail right';
+        } else if (tail.x === beforeTail.x + 1 && tail.y === beforeTail.y) {
+          v.class = 'grid-item snake tail up';
+        } else if (tail.x === beforeTail.x - 1 && tail.y === beforeTail.y) {
+          v.class = 'grid-item snake tail down';
         }
       } else {
         if (snake.length > 2) {
@@ -236,12 +231,12 @@ function App() {
   }, [snake, food]);
 
   return (
-    <div className='App'>
-      <div className='content'>
+    <div className="App">
+      <div className="content">
         <h1>Snake</h1>
         {!gameOver ? (
           <div>
-            <div className='grid'>
+            <div className="grid">
               {grid.map((cell) => {
                 return (
                   <div
@@ -254,7 +249,7 @@ function App() {
             <p>Points: {points}</p>
           </div>
         ) : (
-          <div className='info'>
+          <div className="info">
             <p>Points: {points}</p>
             <button
               onClick={() => {

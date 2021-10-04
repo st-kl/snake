@@ -59,12 +59,12 @@ code {
 }
 
 .tail {
-  /* background-color: white;
+  background-color: white;
   width: 0;
   height: 0;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
-  border-bottom: 28px solid black; */
+  border-bottom: 28px solid black;
 }
 
 .top-left {
