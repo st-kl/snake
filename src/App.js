@@ -4,6 +4,7 @@ function App() {
   const rows = 15;
   const columns = 21;
 
+  // coordinates for food
   const createRandomCoordinates = () => {
     let isAvailable = false;
 
@@ -18,6 +19,7 @@ function App() {
     }
   };
 
+  // states
   const [grid, setGrid] = useState([]);
   const [direction, setDirection] = useState('down');
   const [snake, setSnake] = useState([
@@ -28,17 +30,20 @@ function App() {
   const [points, setPoints] = useState(0);
   const [buttonText, setButtonText] = useState('Play');
   const [highScore, setHighScore] = useState(0);
-  const [difficulty, setDifficulty] = useState(500);
+  const [speed, setSpeed] = useState(150);
 
+  // logic to render grid
   const createGrid = () => {
+    // define each part of the snake with class compositions
     for (const [i, v] of snake.entries()) {
+      // head
       if (i === 0) {
         switch (direction) {
           case 'up':
             v.class = 'grid-item snake head up';
             break;
           case 'down':
-            v.class = 'grid-item snake head doww';
+            v.class = 'grid-item snake head down';
             break;
           case 'left':
             v.class = 'grid-item snake head left';
@@ -49,6 +54,7 @@ function App() {
           default:
             break;
         }
+        // tail
       } else if (i === snake.length - 1) {
         const tail = snake[snake.length - 1];
         const beforeTail = snake[snake.length - 2];
@@ -61,60 +67,63 @@ function App() {
         } else if (tail.x === beforeTail.x - 1 && tail.y === beforeTail.y) {
           v.class = 'grid-item snake tail down';
         }
+        // body - corner
       } else {
         if (snake.length > 2) {
-          const front = snake[i - 1];
-          const back = snake[i + 1];
+          const before = snake[i - 1];
+          const after = snake[i + 1];
           if (
-            (front.x === v.x + 1 &&
-              front.y === v.y &&
-              back.x === v.x &&
-              back.y === v.y + 1) ||
-            (front.x === v.x &&
-              front.y === v.y + 1 &&
-              back.x === v.x + 1 &&
-              back.y === v.y)
+            (before.x === v.x + 1 &&
+              before.y === v.y &&
+              after.x === v.x &&
+              after.y === v.y + 1) ||
+            (before.x === v.x &&
+              before.y === v.y + 1 &&
+              after.x === v.x + 1 &&
+              after.y === v.y)
           ) {
             v.class = 'grid-item snake body top-left';
           } else if (
-            (front.x === v.x &&
-              front.y === v.y + 1 &&
-              back.x === v.x - 1 &&
-              back.y === v.y) ||
-            (front.x === v.x - 1 &&
-              front.y === v.y &&
-              back.x === v.x &&
-              back.y === v.y + 1)
+            (before.x === v.x &&
+              before.y === v.y + 1 &&
+              after.x === v.x - 1 &&
+              after.y === v.y) ||
+            (before.x === v.x - 1 &&
+              before.y === v.y &&
+              after.x === v.x &&
+              after.y === v.y + 1)
           ) {
             v.class = 'grid-item snake body bottom-left';
           } else if (
-            (front.x === v.x - 1 &&
-              front.y === v.y &&
-              back.x === v.x &&
-              back.y === v.y - 1) ||
-            (front.x === v.x &&
-              front.y === v.y - 1 &&
-              back.x === v.x - 1 &&
-              back.y === v.y)
+            (before.x === v.x - 1 &&
+              before.y === v.y &&
+              after.x === v.x &&
+              after.y === v.y - 1) ||
+            (before.x === v.x &&
+              before.y === v.y - 1 &&
+              after.x === v.x - 1 &&
+              after.y === v.y)
           ) {
             v.class = 'grid-item snake body bottom-right';
           } else if (
-            (front.x === v.x &&
-              front.y === v.y - 1 &&
-              back.x === v.x + 1 &&
-              back.y === v.y) ||
-            (front.x === v.x + 1 &&
-              front.y === v.y &&
-              back.x === v.x &&
-              back.y === v.y - 1)
+            (before.x === v.x &&
+              before.y === v.y - 1 &&
+              after.x === v.x + 1 &&
+              after.y === v.y) ||
+            (before.x === v.x + 1 &&
+              before.y === v.y &&
+              after.x === v.x &&
+              after.y === v.y - 1)
           ) {
             v.class = 'grid-item snake body top-right';
+            // body - straight
           } else {
             v.class = 'grid-item snake body';
           }
         }
       }
     }
+
     const grid = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -177,6 +186,7 @@ function App() {
   const checkCollision = () => {
     let isSnake = false;
 
+    // collisions with self
     for (const part of snake.slice(4)) {
       if (part.x === snake[0].x && part.y === snake[0].y) {
         isSnake = true;
@@ -210,9 +220,6 @@ function App() {
       case 39:
         if (direction !== 'left') setDirection('right');
         break;
-      case 32:
-        if (gameOver) startGame();
-        break;
       default:
         break;
     }
@@ -239,7 +246,7 @@ function App() {
 
     const runGame = setInterval(() => {
       moveSnake();
-    }, difficulty);
+    }, speed);
     return () => clearInterval(runGame);
   });
 
@@ -249,12 +256,12 @@ function App() {
   }, [snake, food]);
 
   return (
-    <div className="App">
-      <div className="content">
+    <div className='App'>
+      <div className='content'>
         <h1>Snake</h1>
         {!gameOver ? (
           <div>
-            <div className="grid">
+            <div className='grid'>
               {grid.map((cell) => {
                 return (
                   <div
@@ -264,12 +271,11 @@ function App() {
                 );
               })}
             </div>
-
             <p>Points: {points}</p>
             <p>High Score: {highScore}</p>
           </div>
         ) : (
-          <div className="info">
+          <div className='info'>
             <p
               style={{
                 visibility:
@@ -288,21 +294,21 @@ function App() {
               {buttonText}
             </button>
             <input
-              type="radio"
-              checked={difficulty === 500}
-              onChange={() => setDifficulty(500)}
+              type='radio'
+              checked={speed === 350}
+              onChange={() => setSpeed(350)}
             />
             Easy
             <input
-              type="radio"
-              checked={difficulty === 150}
-              onChange={() => setDifficulty(150)}
+              type='radio'
+              checked={speed === 150}
+              onChange={() => setSpeed(150)}
             />
             Medium
             <input
-              type="radio"
-              checked={difficulty === 50}
-              onChange={() => setDifficulty(50)}
+              type='radio'
+              checked={speed === 50}
+              onChange={() => setSpeed(50)}
             />
             Hard
             <p>Points: {points}</p>
