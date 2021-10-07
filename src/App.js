@@ -31,6 +31,7 @@ function App() {
   const [buttonText, setButtonText] = useState('Play');
   const [highScore, setHighScore] = useState(0);
   const [speed, setSpeed] = useState(150);
+  const [directionIsSet, setDirectionIsSet] = useState(false);
 
   // logic to render grid
   const createGrid = () => {
@@ -207,24 +208,26 @@ function App() {
   };
 
   const keyPress = (event) => {
-    switch (event.keyCode) {
-      case 38:
-        if (direction !== 'down') setDirection('up');
-        break;
-      case 40:
-        if (direction !== 'up') setDirection('down');
-        break;
-      case 37:
-        if (direction !== 'right') setDirection('left');
-        break;
-      case 39:
-        if (direction !== 'left') setDirection('right');
-        break;
-      default:
-        break;
+    if (!directionIsSet) {
+      setDirectionIsSet(true);
+      switch (event.keyCode) {
+        case 38:
+          if (direction !== 'down') setDirection('up');
+          break;
+        case 40:
+          if (direction !== 'up') setDirection('down');
+          break;
+        case 37:
+          if (direction !== 'right') setDirection('left');
+          break;
+        case 39:
+          if (direction !== 'left') setDirection('right');
+          break;
+        default:
+          break;
+      }
     }
   };
-
   const startGame = () => {
     setGameOver(false);
     setSnake([
@@ -241,11 +244,13 @@ function App() {
   // effects
   useEffect(() => {
     document.onkeydown = keyPress;
+
     checkCollision();
     eatFood();
 
     const runGame = setInterval(() => {
       moveSnake();
+      setDirectionIsSet(false);
     }, speed);
     return () => clearInterval(runGame);
   });
@@ -256,12 +261,12 @@ function App() {
   }, [snake, food]);
 
   return (
-    <div className='App'>
-      <div className='content'>
+    <div className="App">
+      <div className="content">
         <h1>Snake</h1>
         {!gameOver ? (
           <div>
-            <div className='grid'>
+            <div className="grid">
               {grid.map((cell) => {
                 return (
                   <div
@@ -275,7 +280,7 @@ function App() {
             <p>High Score: {highScore}</p>
           </div>
         ) : (
-          <div className='info'>
+          <div className="info">
             <p
               style={{
                 visibility:
@@ -294,19 +299,19 @@ function App() {
               {buttonText}
             </button>
             <input
-              type='radio'
+              type="radio"
               checked={speed === 350}
               onChange={() => setSpeed(350)}
             />
             Easy
             <input
-              type='radio'
+              type="radio"
               checked={speed === 150}
               onChange={() => setSpeed(150)}
             />
             Medium
             <input
-              type='radio'
+              type="radio"
               checked={speed === 50}
               onChange={() => setSpeed(50)}
             />
