@@ -68,8 +68,6 @@ function App() {
             highScore={highScore}
             setHighScore={setHighScore}
             speed={speed}
-            setSpeed={setSpeed}
-            buttonText={buttonText}
             setButtonText={setButtonText}
             direction={direction}
             setDirection={setDirection}

@@ -8,8 +8,6 @@ const GameScreen = ({
   highScore,
   setHighScore,
   speed,
-  setSpeed,
-  buttonText,
   setButtonText,
   direction,
   setDirection,
@@ -24,98 +22,109 @@ const GameScreen = ({
   setGrid,
 }) => {
   const [directionIsSet, setDirectionIsSet] = useState(false);
+
+  const buildSnake = () => {
+    for (const [i, v] of snake.entries()) {
+      if (i === 0) {
+        createHead(v);
+      } else if (i === snake.length - 1) {
+        createTail(v);
+      } else {
+        createBody(v, i);
+      }
+    }
+  };
+  const createHead = (v) => {
+    switch (direction) {
+      case 'up':
+        v.class = 'grid-item snake head up';
+        break;
+      case 'down':
+        v.class = 'grid-item snake head down';
+        break;
+      case 'left':
+        v.class = 'grid-item snake head left';
+        break;
+      case 'right':
+        v.class = 'grid-item snake head right';
+        break;
+      default:
+        break;
+    }
+  };
+  const createBody = (v, i) => {
+    if (snake.length > 2) {
+      const before = snake[i - 1];
+      const after = snake[i + 1];
+      if (
+        (before.x === v.x + 1 &&
+          before.y === v.y &&
+          after.x === v.x &&
+          after.y === v.y + 1) ||
+        (before.x === v.x &&
+          before.y === v.y + 1 &&
+          after.x === v.x + 1 &&
+          after.y === v.y)
+      ) {
+        v.class = 'grid-item snake body top-left';
+      } else if (
+        (before.x === v.x &&
+          before.y === v.y + 1 &&
+          after.x === v.x - 1 &&
+          after.y === v.y) ||
+        (before.x === v.x - 1 &&
+          before.y === v.y &&
+          after.x === v.x &&
+          after.y === v.y + 1)
+      ) {
+        v.class = 'grid-item snake body bottom-left';
+      } else if (
+        (before.x === v.x - 1 &&
+          before.y === v.y &&
+          after.x === v.x &&
+          after.y === v.y - 1) ||
+        (before.x === v.x &&
+          before.y === v.y - 1 &&
+          after.x === v.x - 1 &&
+          after.y === v.y)
+      ) {
+        v.class = 'grid-item snake body bottom-right';
+      } else if (
+        (before.x === v.x &&
+          before.y === v.y - 1 &&
+          after.x === v.x + 1 &&
+          after.y === v.y) ||
+        (before.x === v.x + 1 &&
+          before.y === v.y &&
+          after.x === v.x &&
+          after.y === v.y - 1)
+      ) {
+        v.class = 'grid-item snake body top-right';
+      } else {
+        v.class = 'grid-item snake body';
+      }
+    }
+  };
+
+  const createTail = (v) => {
+    const tail = snake[snake.length - 1];
+    const beforeTail = snake[snake.length - 2];
+    if (tail.x === beforeTail.x && tail.y === beforeTail.y + 1) {
+      v.class = 'grid-item snake tail left';
+    } else if (tail.x === beforeTail.x && tail.y === beforeTail.y - 1) {
+      v.class = 'grid-item snake tail right';
+    } else if (tail.x === beforeTail.x + 1 && tail.y === beforeTail.y) {
+      v.class = 'grid-item snake tail up';
+    } else if (tail.x === beforeTail.x - 1 && tail.y === beforeTail.y) {
+      v.class = 'grid-item snake tail down';
+    }
+  };
+
   // logic to render grid
   const createGrid = () => {
     // define each part of the snake with class compositions
-    for (const [i, v] of snake.entries()) {
-      // head
-      if (i === 0) {
-        switch (direction) {
-          case 'up':
-            v.class = 'grid-item snake head up';
-            break;
-          case 'down':
-            v.class = 'grid-item snake head down';
-            break;
-          case 'left':
-            v.class = 'grid-item snake head left';
-            break;
-          case 'right':
-            v.class = 'grid-item snake head right';
-            break;
-          default:
-            break;
-        }
-        // tail
-      } else if (i === snake.length - 1) {
-        const tail = snake[snake.length - 1];
-        const beforeTail = snake[snake.length - 2];
-        if (tail.x === beforeTail.x && tail.y === beforeTail.y + 1) {
-          v.class = 'grid-item snake tail left';
-        } else if (tail.x === beforeTail.x && tail.y === beforeTail.y - 1) {
-          v.class = 'grid-item snake tail right';
-        } else if (tail.x === beforeTail.x + 1 && tail.y === beforeTail.y) {
-          v.class = 'grid-item snake tail up';
-        } else if (tail.x === beforeTail.x - 1 && tail.y === beforeTail.y) {
-          v.class = 'grid-item snake tail down';
-        }
-        // body - corner
-      } else {
-        if (snake.length > 2) {
-          const before = snake[i - 1];
-          const after = snake[i + 1];
-          if (
-            (before.x === v.x + 1 &&
-              before.y === v.y &&
-              after.x === v.x &&
-              after.y === v.y + 1) ||
-            (before.x === v.x &&
-              before.y === v.y + 1 &&
-              after.x === v.x + 1 &&
-              after.y === v.y)
-          ) {
-            v.class = 'grid-item snake body top-left';
-          } else if (
-            (before.x === v.x &&
-              before.y === v.y + 1 &&
-              after.x === v.x - 1 &&
-              after.y === v.y) ||
-            (before.x === v.x - 1 &&
-              before.y === v.y &&
-              after.x === v.x &&
-              after.y === v.y + 1)
-          ) {
-            v.class = 'grid-item snake body bottom-left';
-          } else if (
-            (before.x === v.x - 1 &&
-              before.y === v.y &&
-              after.x === v.x &&
-              after.y === v.y - 1) ||
-            (before.x === v.x &&
-              before.y === v.y - 1 &&
-              after.x === v.x - 1 &&
-              after.y === v.y)
-          ) {
-            v.class = 'grid-item snake body bottom-right';
-          } else if (
-            (before.x === v.x &&
-              before.y === v.y - 1 &&
-              after.x === v.x + 1 &&
-              after.y === v.y) ||
-            (before.x === v.x + 1 &&
-              before.y === v.y &&
-              after.x === v.x &&
-              after.y === v.y - 1)
-          ) {
-            v.class = 'grid-item snake body top-right';
-            // body - straight
-          } else {
-            v.class = 'grid-item snake body';
-          }
-        }
-      }
-    }
-
+    buildSnake();
+    
     const grid = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
