@@ -22,6 +22,14 @@ code {
   text-align: center;
 }
 
+.radioButtons {
+  text-align: left;
+}
+
+input {
+  margin-right: 10px;
+}
+
 .grid {
   border: solid 1px black;
   height: 422px;

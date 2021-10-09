@@ -1,50 +1,68 @@
-import React, { useState } from 'react';
-import { startGame } from '../utils';
+import React from 'react';
 
+const StartScreen = ({
+  rows,
+  columns,
+  gameOver,
+  setGameOver,
+  points,
+  setPoints,
+  highScore,
+  speed,
+  setSpeed,
+  buttonText,
+  setDirection,
+  setFood,
+  setSnake,
+  createRandomCoordinates,
+}) => {
+  const radioButtons = [
+    { level: 'Easy', speed: 350 },
+    { level: 'Medium', speed: 150 },
+    { level: 'Hard', speed: 50 },
+  ];
 
-const StartScreen = (gameOver, setGameOver, points, setPoints, highScore, setHighScore, speed, setSpeed) => {
-  const [buttonText, setButtonText] = useState("Start")
+  const startGame = () => {
+    setGameOver(false);
+    setSnake([
+      {
+        x: Math.floor(rows / 2),
+        y: Math.floor(columns / 2),
+      },
+    ]);
+    setFood(createRandomCoordinates());
+    setPoints(0);
+    setDirection('down');
+  };
 
   return (
-    <div className="info">
-    <p
-      style={{
-        visibility:
-          gameOver && buttonText === 'Play again'
-            ? 'visible'
-            : 'hidden',
-      }}
-    >
-      GAME OVER
-    </p>
-    <button
-      onClick={() => {
-        startGame();
-      }}
-    >
-      {buttonText}
-    </button>
-    <input
-      type="radio"
-      checked={speed === 350}
-      onChange={() => setSpeed(350)}
-    />
-    Easy
-    <input
-      type="radio"
-      checked={speed === 150}
-      onChange={() => setSpeed(150)}
-    />
-    Medium
-    <input
-      type="radio"
-      checked={speed === 50}
-      onChange={() => setSpeed(50)}
-    />
-    Hard
-    <p>Points: {points}</p>
-    <p>High Score: {highScore}</p>
-  </div>
+    <div className='info'>
+      {gameOver && buttonText === 'Play again' ? <p>GAME OVER</p> : <p></p>}
+      <button
+        onClick={() => {
+          startGame();
+        }}
+      >
+        {buttonText}
+      </button>
+      <div className='radioButtons'>
+        {radioButtons.map((button) => {
+          return (
+            <div>
+              <input
+                key={button.level}
+                type='radio'
+                checked={speed === button.speed}
+                onChange={() => setSpeed(button.speed)}
+              />
+              {button.level}
+            </div>
+          );
+        })}
+      </div>
+      <p>Points: {points}</p>
+      <p>High Score: {highScore}</p>
+    </div>
   );
 };
 
