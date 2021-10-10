@@ -40,20 +40,13 @@ function App() {
         <h1>Snake</h1>
         {gameOver ? (
           <StartScreen
-            rows={rows}
-            columns={columns}
             gameOver={gameOver}
             setGameOver={setGameOver}
             points={points}
-            setPoints={setPoints}
             highScore={highScore}
             speed={speed}
             setSpeed={setSpeed}
             buttonText={buttonText}
-            setDirection={setDirection}
-            setFood={setFood}
-            setSnake={setSnake}
-            createRandomCoordinates={createRandomCoordinates}
             grid={grid}
             setGrid={setGrid}
           />

@@ -1,20 +1,13 @@
 import React from 'react';
 
 const StartScreen = ({
-  rows,
-  columns,
   gameOver,
   setGameOver,
   points,
-  setPoints,
   highScore,
   speed,
   setSpeed,
   buttonText,
-  setDirection,
-  setFood,
-  setSnake,
-  createRandomCoordinates,
 }) => {
   const radioButtons = [
     { level: 'Easy', speed: 350 },
@@ -22,25 +15,12 @@ const StartScreen = ({
     { level: 'Hard', speed: 50 },
   ];
 
-  const startGame = () => {
-    setGameOver(false);
-    setSnake([
-      {
-        x: Math.floor(rows / 2),
-        y: Math.floor(columns / 2),
-      },
-    ]);
-    setFood(createRandomCoordinates());
-    setPoints(0);
-    setDirection('down');
-  };
-
   return (
     <div className='info'>
       {gameOver && buttonText === 'Play again' ? <p>GAME OVER</p> : <p></p>}
       <button
         onClick={() => {
-          startGame();
+          setGameOver(false);
         }}
       >
         {buttonText}
