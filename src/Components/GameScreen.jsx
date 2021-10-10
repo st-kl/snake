@@ -34,6 +34,7 @@ const GameScreen = ({
       }
     }
   };
+
   const createHead = (v) => {
     switch (direction) {
       case 'up':
@@ -52,57 +53,56 @@ const GameScreen = ({
         break;
     }
   };
+
   const createBody = (v, i) => {
-    if (snake.length > 2) {
-      const before = snake[i - 1];
-      const after = snake[i + 1];
-      if (
-        (before.x === v.x + 1 &&
-          before.y === v.y &&
-          after.x === v.x &&
-          after.y === v.y + 1) ||
-        (before.x === v.x &&
-          before.y === v.y + 1 &&
-          after.x === v.x + 1 &&
-          after.y === v.y)
-      ) {
-        v.class = 'grid-item snake body top-left';
-      } else if (
-        (before.x === v.x &&
-          before.y === v.y + 1 &&
-          after.x === v.x - 1 &&
-          after.y === v.y) ||
-        (before.x === v.x - 1 &&
-          before.y === v.y &&
-          after.x === v.x &&
-          after.y === v.y + 1)
-      ) {
-        v.class = 'grid-item snake body bottom-left';
-      } else if (
-        (before.x === v.x - 1 &&
-          before.y === v.y &&
-          after.x === v.x &&
-          after.y === v.y - 1) ||
-        (before.x === v.x &&
-          before.y === v.y - 1 &&
-          after.x === v.x - 1 &&
-          after.y === v.y)
-      ) {
-        v.class = 'grid-item snake body bottom-right';
-      } else if (
-        (before.x === v.x &&
-          before.y === v.y - 1 &&
-          after.x === v.x + 1 &&
-          after.y === v.y) ||
-        (before.x === v.x + 1 &&
-          before.y === v.y &&
-          after.x === v.x &&
-          after.y === v.y - 1)
-      ) {
-        v.class = 'grid-item snake body top-right';
-      } else {
-        v.class = 'grid-item snake body';
-      }
+    const before = snake[i - 1];
+    const after = snake[i + 1];
+    if (
+      (before.x === v.x + 1 &&
+        before.y === v.y &&
+        after.x === v.x &&
+        after.y === v.y + 1) ||
+      (before.x === v.x &&
+        before.y === v.y + 1 &&
+        after.x === v.x + 1 &&
+        after.y === v.y)
+    ) {
+      v.class = 'grid-item snake body top-left';
+    } else if (
+      (before.x === v.x &&
+        before.y === v.y + 1 &&
+        after.x === v.x - 1 &&
+        after.y === v.y) ||
+      (before.x === v.x - 1 &&
+        before.y === v.y &&
+        after.x === v.x &&
+        after.y === v.y + 1)
+    ) {
+      v.class = 'grid-item snake body bottom-left';
+    } else if (
+      (before.x === v.x - 1 &&
+        before.y === v.y &&
+        after.x === v.x &&
+        after.y === v.y - 1) ||
+      (before.x === v.x &&
+        before.y === v.y - 1 &&
+        after.x === v.x - 1 &&
+        after.y === v.y)
+    ) {
+      v.class = 'grid-item snake body bottom-right';
+    } else if (
+      (before.x === v.x &&
+        before.y === v.y - 1 &&
+        after.x === v.x + 1 &&
+        after.y === v.y) ||
+      (before.x === v.x + 1 &&
+        before.y === v.y &&
+        after.x === v.x &&
+        after.y === v.y - 1)
+    ) {
+      v.class = 'grid-item snake body top-right';
+    } else {
+      v.class = 'grid-item snake body';
     }
   };
 
@@ -120,11 +120,9 @@ const GameScreen = ({
     }
   };
 
-  // logic to render grid
   const createGrid = () => {
-    // define each part of the snake with class compositions
-    buildSnake();
     
+
     const grid = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -187,7 +185,6 @@ const GameScreen = ({
   const checkCollision = () => {
     let isSnake = false;
 
-    // collisions with self
     for (const part of snake.slice(4)) {
       if (part.x === snake[0].x && part.y === snake[0].y) {
         isSnake = true;
@@ -232,9 +229,6 @@ const GameScreen = ({
   useEffect(() => {
     document.onkeydown = keyPress;
 
-    checkCollision();
-    eatFood();
-
     const runGame = setInterval(() => {
       moveSnake();
       setDirectionIsSet(false);
@@ -243,7 +237,10 @@ const GameScreen = ({
   });
 
   useEffect(() => {
+    buildSnake();
     setGrid(createGrid());
+    checkCollision();
+    eatFood();
     // eslint-disable-next-line
   }, [snake, food]);
 

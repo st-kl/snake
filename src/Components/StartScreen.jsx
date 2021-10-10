@@ -48,7 +48,7 @@ const StartScreen = ({
       <div className='radioButtons'>
         {radioButtons.map((button) => {
           return (
-            <div>
+            <div key={button.level}>
               <input
                 key={button.level}
                 type='radio'
