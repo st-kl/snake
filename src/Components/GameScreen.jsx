@@ -12,17 +12,16 @@ const GameScreen = ({
 }) => {
   const rows = 15;
   const columns = 21;
-    // calculate random x and y coordinates for the food item and
+
+  // calculate random x and y coordinates for the food item and
   // make sure it's not placed where the snake currently is
   const createRandomCoordinates = () => {
-    let isAvailable = false;
 
-    while (!isAvailable) {
+    while (true) {
       const x = Math.floor(Math.random() * rows);
       const y = Math.floor(Math.random() * columns);
 
       if (!snake.filter((part) => part.x === x && part.y === y).length) {
-        isAvailable = true;
         return { x, y };
       }
     }
