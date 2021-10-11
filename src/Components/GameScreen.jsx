@@ -9,21 +9,34 @@ const GameScreen = ({
   setHighScore,
   speed,
   setButtonText,
-  direction,
-  setDirection,
-  food,
-  setFood,
-  snake,
-  setSnake,
-  rows,
-  columns,
-  createRandomCoordinates,
-  grid,
-  setGrid,
 }) => {
-  const [directionIsSet, setDirectionIsSet] = useState(false);
+  const rows = 15;
+  const columns = 21;
+    // calculate random x and y coordinates for the food item and
+  // make sure it's not placed where the snake currently is
+  const createRandomCoordinates = () => {
+    let isAvailable = false;
 
-  // assigns a class to each part of the snake to define the shape for
+    while (!isAvailable) {
+      const x = Math.floor(Math.random() * rows);
+      const y = Math.floor(Math.random() * columns);
+
+      if (!snake.filter((part) => part.x === x && part.y === y).length) {
+        isAvailable = true;
+        return { x, y };
+      }
+    }
+  };
+
+  const [grid, setGrid] = useState([]);
+  const [snake, setSnake] = useState([
+    { x: Math.floor(rows / 2), y: Math.floor(columns / 2) },
+  ]);
+  const [food, setFood] = useState(createRandomCoordinates());
+  const [directionIsSet, setDirectionIsSet] = useState(false);
+  const [direction, setDirection] = useState('down');
+
+  // assign a class to each part of the snake to define the shape for
   // the head, body (straight & corner) and tail
   const buildSnake = () => {
     for (const [i, v] of snake.entries()) {
@@ -37,7 +50,7 @@ const GameScreen = ({
     }
   };
 
-  // defines in which direction the head points based on
+  // define in which direction the head points based on
   // where the snake is heading
   const makeHead = (v) => {
     switch (direction) {
@@ -58,8 +71,8 @@ const GameScreen = ({
     }
   };
 
-  // defines the shape of each body part of the snake
-  // and differentiates between a straight and corner element
+  // define the shape of each body part of the snake
+  // and differentiate between a straight and corner element
   // by analyzing the position of the element before and after
   const makeBody = (v, i) => {
     const before = snake[i - 1];
@@ -118,7 +131,7 @@ const GameScreen = ({
     }
   };
 
-  // defines in which direction the tail points (last snake element) based on
+  // define in which direction the tail points (last snake element) based on
   // the direction of the penultimate snake element
   const makeTail = (v) => {
     const tail = snake[snake.length - 1];
@@ -135,7 +148,7 @@ const GameScreen = ({
     }
   };
 
-  // creates the actual grid by defining each cell as either
+  // create the actual grid by defining each cell as either
   // a snake, food or surrounding grit element
   const createGrid = () => {
     const grid = [];
@@ -143,7 +156,7 @@ const GameScreen = ({
       for (let j = 0; j < columns; j++) {
         let isSnake = false;
 
-        // checks if cell is a snake element
+        // check if cell is a snake element
         for (const part of snake) {
           if (part.x === i && part.y === j) {
             isSnake = true;
@@ -152,11 +165,11 @@ const GameScreen = ({
         }
 
         if (!isSnake) {
-          // checks if cell is a food element
+          // check if cell is a food element
           if (food.x === i && food.y === j) {
             grid.push({ x: i, y: j, class: 'grid-item food' });
             isSnake = false;
-            // make cell a surrounding grid element
+            // make cell a normal grid element
           } else {
             grid.push({ x: i, y: j, class: 'grid-item' });
           }
@@ -166,7 +179,7 @@ const GameScreen = ({
     return grid;
   };
 
-  // "moves" the snake along the grid by moving the head one step in the current
+  // "move" the snake along the grid by moving the head one step in the current
   // direction and removing the tail
   const moveSnake = () => {
     if (!gameOver) {
@@ -191,21 +204,21 @@ const GameScreen = ({
     }
   };
 
-  // adds one element to the end of the snake
+  // add one element to the end of the snake
   const growSnake = () => {
     setSnake([...snake, snake.slice(-1)]);
   };
 
-  // checks if the head and food occupy the same cell
+  // check if the head and food occupy the same cell
   const eatsFood = () => {
     return snake[0].x === food.x && snake[0].y === food.y;
   };
 
-  // checks if the snake is leaving the grid or colliding with itself
+  // check if the snake is leaving the grid or colliding with itself
   const isColliding = () => {
     let isSnake = false;
 
-    // checks if head occupies the same cell as a body element, i.e. if the snake
+    // check if head occupies the same cell as a body element, i.e. if the snake
     // is running into itself
     for (const part of snake.slice(4)) {
       if (part.x === snake[0].x && part.y === snake[0].y) {
@@ -213,7 +226,7 @@ const GameScreen = ({
       }
     }
 
-    // checks if snake leaves the grid boundaries
+    // check if snake leaves the grid boundaries
     return (
       snake[0].x === -1 ||
       snake[0].x === rows ||
@@ -223,7 +236,7 @@ const GameScreen = ({
     );
   };
 
-  // translates a key press into a change of direction, but prohibits a change
+  // translate a key press into a change of direction, but prohibits a change
   // in the opposite direction
   const keyPress = (event) => {
     if (!directionIsSet) {
@@ -280,7 +293,6 @@ const GameScreen = ({
       setPoints(points + 1);
       setFood(createRandomCoordinates());
     }
-    console.log(snake);
     buildSnake();
     setGrid(createGrid());
 
