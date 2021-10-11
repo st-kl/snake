@@ -41,8 +41,6 @@ const GameScreen = ({
     for (const [i, v] of snake.entries()) {
       if (i === 0) {
         makeHead(v);
-      } else if (i === snake.length - 1) {
-        makeTail(v);
       } else {
         makeBody(v, i);
       }
@@ -127,23 +125,6 @@ const GameScreen = ({
       // straight body element
     } else {
       v.class = 'grid-item snake body';
-    }
-  };
-
-  // define in which direction the tail points (last snake element) based on
-  // the direction of the penultimate snake element
-  const makeTail = (v) => {
-    const tail = snake[snake.length - 1];
-    const beforeTail = snake[snake.length - 2];
-
-    if (tail.x === beforeTail.x && tail.y === beforeTail.y + 1) {
-      v.class = 'grid-item snake tail left';
-    } else if (tail.x === beforeTail.x && tail.y === beforeTail.y - 1) {
-      v.class = 'grid-item snake tail right';
-    } else if (tail.x === beforeTail.x + 1 && tail.y === beforeTail.y) {
-      v.class = 'grid-item snake tail up';
-    } else if (tail.x === beforeTail.x - 1 && tail.y === beforeTail.y) {
-      v.class = 'grid-item snake tail down';
     }
   };
 
