@@ -16,7 +16,6 @@ const GameScreen = ({
   // calculate random x and y coordinates for the food item and
   // make sure it's not placed where the snake currently is
   const createRandomCoordinates = () => {
-
     while (true) {
       const x = Math.floor(Math.random() * rows);
       const y = Math.floor(Math.random() * columns);
@@ -130,12 +129,11 @@ const GameScreen = ({
     }
   };
 
-  // define in which direction the tail points (last snake element) based on
+   // define in which direction the tail points (last snake element) based on
   // the direction of the penultimate snake element
   const makeTail = (v) => {
     const tail = snake[snake.length - 1];
     const beforeTail = snake[snake.length - 2];
-
     if (tail.x === beforeTail.x && tail.y === beforeTail.y + 1) {
       v.class = 'grid-item snake tail left';
     } else if (tail.x === beforeTail.x && tail.y === beforeTail.y - 1) {
@@ -146,6 +144,7 @@ const GameScreen = ({
       v.class = 'grid-item snake tail down';
     }
   };
+
 
   // create the actual grid by defining each cell as either
   // a snake, food or surrounding grit element
@@ -205,7 +204,7 @@ const GameScreen = ({
 
   // add one element to the end of the snake
   const growSnake = () => {
-    setSnake([...snake, snake.slice(-1)]);
+    setSnake([...snake, {...snake.slice(-1)}]);
   };
 
   // check if the head and food occupy the same cell
