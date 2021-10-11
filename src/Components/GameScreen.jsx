@@ -129,6 +129,7 @@ const GameScreen = ({
     }
   };
 
+
    // define in which direction the tail points (last snake element) based on
   // the direction of the penultimate snake element
   const makeTail = (v) => {
@@ -144,7 +145,6 @@ const GameScreen = ({
       v.class = 'grid-item snake tail down';
     }
   };
-
 
   // create the actual grid by defining each cell as either
   // a snake, food or surrounding grit element
