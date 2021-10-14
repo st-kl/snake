@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -6,16 +8,14 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'VT323', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1 {
+  font-size: 3rem;
+  margin: 10px;
 }
 
 .content {
@@ -27,7 +27,7 @@ code {
 }
 
 input {
-  margin-right: 10px;
+  margin: 0 10px 5px 0;
 }
 
 .grid {
@@ -107,6 +107,8 @@ button {
   padding: 10px;
   margin: 10px;
   font-size: 1.5rem;
+  font-family: 'VT323', monospace;
+  font-weight: bold;
 }
 
 p {
