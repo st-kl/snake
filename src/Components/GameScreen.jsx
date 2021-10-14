@@ -287,7 +287,7 @@ const GameScreen = ({
       setFood(createRandomCoordinates());
       // check if snake eats food
     } else if (eatsFood()) {
-      growSnake();
+      growSnake();     
       setPoints(points + 1);
       setFood(createRandomCoordinates());
     }
