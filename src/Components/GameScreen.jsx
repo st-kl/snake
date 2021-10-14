@@ -12,6 +12,11 @@ const GameScreen = ({
 }) => {
   const rows = 15;
   const columns = 21;
+  let audio = new Audio("./Hit-sound.mp3")
+
+  const start = () => {
+    audio.play()
+  }
 
   // calculate random x and y coordinates for the food item and
   // make sure it's not placed where the snake currently is
@@ -286,8 +291,8 @@ const GameScreen = ({
       setDirection('down');
       setFood(createRandomCoordinates());
       // check if snake eats food
-    } else if (eatsFood()) {
-      growSnake();     
+    } else if (eatsFood()) {     
+      growSnake();
       setPoints(points + 1);
       setFood(createRandomCoordinates());
     }
