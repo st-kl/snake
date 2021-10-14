@@ -8,6 +8,7 @@ const StartScreen = ({
   speed,
   setSpeed,
   buttonText,
+  setCountDownScreen
 }) => {
   const radioButtons = [
     { level: 'Easy', speed: 350 },
@@ -17,7 +18,9 @@ const StartScreen = ({
 
   // start new game when hitting the space bar
   const keyPress = (event) => {
-    if(event.keyCode === 32){setGameOver(false)}
+    if(event.keyCode === 32){
+      setGameOver(false);
+      setCountDownScreen(true)}
   };
 
   // event listener for key press
@@ -29,6 +32,7 @@ const StartScreen = ({
       <button
         onClick={() => {
           setGameOver(false);
+          setCountDownScreen(true);
         }}
       >
         {buttonText}
