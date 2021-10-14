@@ -15,6 +15,14 @@ const StartScreen = ({
     { level: 'Hard', speed: 50 },
   ];
 
+  // start new game when hitting the space bar
+  const keyPress = (event) => {
+    if(event.keyCode === 32){setGameOver(false)}
+  };
+
+  // event listener for key press
+  document.onkeydown = keyPress;
+
   return (
     <div className='info'>
       {gameOver && buttonText === 'Play again' ? <p>GAME OVER</p> : <p></p>}
