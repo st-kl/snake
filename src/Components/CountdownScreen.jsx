@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
 const CountdownScreen = ({setCountDownScreen}) => {
-  const [seconds, setSeconds] = useState(3);
+  const [index, setIndex] = useState(0);
+  const values = ["Ready?", "Go!"]
 
   useEffect(() => {
-    if (seconds > 0) {
-      setTimeout(() => setSeconds(seconds - 1), 500 );
+    if (index < 2) {
+      setTimeout(() => setIndex(index + 1), 750 );
     } else {
       setCountDownScreen(false)
     }
@@ -13,7 +14,7 @@ const CountdownScreen = ({setCountDownScreen}) => {
 
   return (
     <div className="info">
-       <p>{seconds}</p>
+       <p>{values[index]}</p>
     </div>
   );
 };
