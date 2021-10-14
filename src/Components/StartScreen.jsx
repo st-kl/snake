@@ -50,6 +50,8 @@ const StartScreen = ({
       </div>
       <p>Points: {points}</p>
       <p>High Score: {highScore}</p>
+      <p className="instructions">Control snake: arrow keys</p>
+      <p className="instructions">Start game: spacebar</p>
     </div>
   );
 };
