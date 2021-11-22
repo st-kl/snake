@@ -12,14 +12,15 @@ function App() {
   const [countDownScreen, setCountDownScreen] = useState(false);
 
   return (
-    <div className="App">
-      <div className="content">
+    <div className='App'>
+      <div className='content'>
         <h1>Snake</h1>
         {gameOver ? (
           <StartScreen
             gameOver={gameOver}
             setGameOver={setGameOver}
             points={points}
+            setPoints={setPoints}
             highScore={highScore}
             speed={speed}
             setSpeed={setSpeed}

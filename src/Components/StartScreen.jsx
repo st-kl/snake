@@ -4,11 +4,12 @@ const StartScreen = ({
   gameOver,
   setGameOver,
   points,
+  setPoints,
   highScore,
   speed,
   setSpeed,
   buttonText,
-  setCountDownScreen
+  setCountDownScreen,
 }) => {
   const radioButtons = [
     { level: 'Easy', speed: 350 },
@@ -16,11 +17,15 @@ const StartScreen = ({
     { level: 'Hard', speed: 50 },
   ];
 
+  const startNewGame = () => {
+    setGameOver(false);
+    setCountDownScreen(true);
+    setPoints(0);
+  };
+
   // start new game when hitting the space bar
   const keyPress = (event) => {
-    if(event.keyCode === 32){
-      setGameOver(false);
-      setCountDownScreen(true)}
+    if (event.keyCode === 32) startNewGame();
   };
 
   // event listener for key press
@@ -29,14 +34,7 @@ const StartScreen = ({
   return (
     <div className='info'>
       {gameOver && buttonText === 'Play again' ? <p>GAME OVER</p> : <p></p>}
-      <button
-        onClick={() => {
-          setGameOver(false);
-          setCountDownScreen(true);
-        }}
-      >
-        {buttonText}
-      </button>
+      <button onClick={() => startNewGame()}>{buttonText}</button>
       <div className='radioButtons'>
         {radioButtons.map((button) => {
           return (
@@ -54,8 +52,8 @@ const StartScreen = ({
       </div>
       <p>Points: {points}</p>
       <p>High Score: {highScore}</p>
-      <p className="instructions">Control snake: arrow keys</p>
-      <p className="instructions">Start game: spacebar</p>
+      <p className='instructions'>Control snake: arrow keys</p>
+      <p className='instructions'>Start game: spacebar</p>
     </div>
   );
 };

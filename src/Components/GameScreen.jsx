@@ -129,8 +129,7 @@ const GameScreen = ({
     }
   };
 
-
-   // define in which direction the tail points (last snake element) based on
+  // define in which direction the tail points (last snake element) based on
   // the direction of the penultimate snake element
   const makeTail = (v) => {
     const tail = snake[snake.length - 1];
@@ -204,7 +203,7 @@ const GameScreen = ({
 
   // add one element to the end of the snake
   const growSnake = () => {
-    setSnake([...snake, {...snake.slice(-1)}]);
+    setSnake([...snake, { ...snake.slice(-1) }]);
   };
 
   // check if the head and food occupy the same cell
@@ -282,11 +281,10 @@ const GameScreen = ({
           y: Math.floor(columns / 2),
         },
       ]);
-      setPoints(0);
       setDirection('down');
       setFood(createRandomCoordinates());
       // check if snake eats food
-    } else if (eatsFood()) {     
+    } else if (eatsFood()) {
       growSnake();
       setPoints(points + 1);
       setFood(createRandomCoordinates());
